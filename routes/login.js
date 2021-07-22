@@ -1,7 +1,6 @@
-const jwt = require("jsonwebtoken");
-
-const User = require("../models/userModel");
 const db = require("../db-config");
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
 const checkAuthFields = require("../middlewares/checkFields");
 const checkJwt = require("../middlewares/checkJwt");
 
@@ -12,11 +11,9 @@ require("dotenv").config();
 
 loginRouter.post("/", checkAuthFields, (req, res) => {
   const { email, password } = req.body;
-  console.log(req.body);
 
   db.query("SELECT * FROM admin WHERE email = ?", email, (err, results) => {
-    const [user] = JSON.parse(JSON.stringify(results));
-    console.log(user.hashedPassword);
+    const [user] = results;
     User.verifyPassword(password, user.hashedPassword, err)
       .then((passwordIsCorrect) => {
         if (err) {
@@ -31,8 +28,10 @@ loginRouter.post("/", checkAuthFields, (req, res) => {
           const payload = { id, email };
           const privateKey = process.env.JWT_SECRET;
 
-          jwt.sign({ payload }, privateKey, (jwterr, token) => {
+          jwt.sign({ payload }, "secret", (jwterr, token) => {
+            console.log(jwterr);
             if (jwterr) {
+              console.log(jwterr);
               return res.status(500).json({
                 errors: [jwterr.message],
               });
