@@ -21,9 +21,22 @@ const update = (id, newData) => {
   return db.query("UPDATE projects SET ? WHERE id = ?", [newData, id]);
 };
 
+const createNewProject = ({ name, description, image, link }) => {
+  return db
+    .query(
+      "INSERT INTO projects (name, description, image, link) VALUES (?, ?, ?, ?)",
+      [name, description, image, link]
+    )
+    .then(([result]) => {
+      const id = result.insertId;
+      return { id, name, description, image, link };
+    });
+};
+
 module.exports = {
   findProject,
   findOne,
   update,
   destroy,
+  createNewProject,
 };

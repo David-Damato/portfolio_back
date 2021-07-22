@@ -19,31 +19,29 @@ const verifyPassword = (plainPassword, hashedPassword) => {
   return argon2.verify(hashedPassword, plainPassword, hashingOptions);
 };
 
-const destroy = (id) => {
-  return db
-    .query("DELETE FROM User WHERE idUser = ?", [id])
-    .then(([result]) => result.affetedRows !== 0);
+const create = ({ email, password }) => {
+  return hashPassword(password).then((hashedPassword) => {
+    return db
+      .query("INSERT INTO admin SET ?", {
+        email,
+        hashedPassword,
+      })
+      .then(([result]) => {
+        const id = result.insertId;
+        return { email, id };
+      });
+  });
 };
 
-const update = (id, newData) => {
-  return db.query("UPDATE User SET ? WHERE idUser = ?", [newData, id]);
-};
-
-const findOne = (id) => {
+const findByEmail = (email) => {
   return db
-    .query("SELECT * FROM User WHERE idUser = ?", [id])
+    .query("SELECT * FROM admin WHERE email = ?", [email])
     .then(([results]) => results[0]);
 };
 
-const findAll = () => {
-  return db.query("SELECT * FROM User").then(([results]) => results);
-};
-
 module.exports = {
-  update,
-  destroy,
-  findAll,
-  findOne,
   hashPassword,
   verifyPassword,
+  create,
+  findByEmail,
 };

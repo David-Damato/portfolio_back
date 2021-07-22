@@ -35,6 +35,17 @@ projectRouter.delete("/:id", (req, res) => {
     });
 });
 
+projectRouter.post("/newproject", (req, res) => {
+  Project.createNewProject(req.body)
+    .then((createdProject) => {
+      res.status(201).json(createdProject);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("Error saving the project");
+    });
+});
+
 projectRouter.put("/:id", (req, res) => {
   let existingProject = null;
   Project.findOne(req.params.id)

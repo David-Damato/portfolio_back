@@ -6,7 +6,6 @@
   "scripts": {
     "start": "node -r dotenv/config app.js",
     "dev": "nodemon -r dotenv/config app.js",
-    "lint": "./node_modules/.bin/eslint --ext .js",
     "test": "DB_NAME=databasename_test jest",
     "test:watch": "DB_NAME=databasename_test jest --watch"
   },
@@ -19,6 +18,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "joi": "^17.4.0",
+    "jsonwebtoken": "^8.5.1",
     "mysql2": "^2.2.5"
   },
   "devDependencies": {
@@ -31,10 +31,5 @@
   },
   "jest": {
     "testEnvironment": "node"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   }
 }
